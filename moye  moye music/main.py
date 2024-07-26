@@ -263,19 +263,10 @@ class Ui_MainWindow(object):
                 print(e)
         return result[2]
     def set_slider(self,value):
-
-        self.value=value   
-        self.Song_bar.setMaximum(int(self.value))
-        self.timer = QTimer()
-        self.timer.setInterval(1000)  # 1000 milliseconds = 1 second
-        self.timer.timeout.connect(self.update_song_bar)
-        self.timer.start()
-        # self.Song_bar.setValue(self.Song_bar.value()+1)
+            self.value=value
+            while self.Song_bar.value()<self.value:
+                    self.Song_bar.setValue(self.Song_bar.value()+1)
         
-        
-    def update_song_bar(self):
-        self.value += 1
-        self.Song_bar.setValue(self.value)
     def pushButton_2_clicked(self):
         
         if self.Title_search.text() !='':
@@ -315,6 +306,12 @@ class Ui_MainWindow(object):
         play_=player.Player(self.Title_search.text())
         self.Playpause.setPixmap(QtGui.QPixmap("icons_images/play.png"))
         play_.play()
+        t1=threading.Thread(target=self.set_slider,args=[int(result[2])])
+        try:
+                t1.start()
+                t1.join()
+        except Exception as e:
+                print(e)
     def playpause_button_clicked(self):
             
         if not self.playpause_state:
@@ -327,7 +324,7 @@ class Ui_MainWindow(object):
             self.playpause_state = False
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Soundify"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Moye Moye Music"))
         self.commandLinkButton.setText(_translate("MainWindow", "CommandLinkButton"))
         self.label.setText(_translate("MainWindow", "<<<"))
         # MainWindow.setWindowFlags(Qt.FramelessWindowHint)
